@@ -1,2 +1,5 @@
 # PID_Symbol_Detection
- Detect symbols in Piping & Instrumentaion Drawings
+ Detect symbols in Piping & Instrumentation Drawings
+
+
+<img src="./media/overview.svg">
