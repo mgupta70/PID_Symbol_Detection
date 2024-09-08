@@ -8,6 +8,7 @@ from sahi.predict import get_prediction, get_sliced_prediction, predict
 from fastai.vision.all import *
 
 
+
 def make_train_val_test_split(dataset_dir, train_val_test_ratio=[0.64, 0.16, 0.20]):
     """
     Splits the dataset into training, validation, and test sets based on the specified ratio.
@@ -44,13 +45,13 @@ def make_train_val_test_split(dataset_dir, train_val_test_ratio=[0.64, 0.16, 0.2
     
     return train_images, val_images, test_images
 
-def select_crops(full_pid_splits, crops_folder_pth):
+def select_crops(train_val_ims, crops_folder_pth):
     """
     Selects and groups matching cropped images for each full PID image.
 
     Parameters:
     -----------
-    full_pid_splits : list of lists
+    train_val_ims : list of lists
         A list containing lists of full PID image paths.
     crops_folder_pth : str or Path
         Path to the folder containing the cropped images.
@@ -63,7 +64,7 @@ def select_crops(full_pid_splits, crops_folder_pth):
     crop_im_pths, _ = get_im_txt_pths(crops_folder_pth)
     crops_splits = []
     
-    for im_pths in full_pid_splits:
+    for im_pths in train_val_ims:
         matching_crops = []
         
         for im_pth in im_pths:
@@ -76,7 +77,39 @@ def select_crops(full_pid_splits, crops_folder_pth):
     
     return crops_splits
 
-def make_yolo_folders(dir_name, train_images, val_images, test_images):
+# def select_crops(full_pid_splits, crops_folder_pth):
+#     """
+#     Selects and groups matching cropped images for each full PID image.
+
+#     Parameters:
+#     -----------
+#     full_pid_splits : list of lists
+#         A list containing lists of full PID image paths.
+#     crops_folder_pth : str or Path
+#         Path to the folder containing the cropped images.
+
+#     Returns:
+#     --------
+#     crops_splits : list of lists
+#         A list containing lists of cropped image paths, corresponding to each set of full PID images.
+#     """
+#     crop_im_pths, _ = get_im_txt_pths(crops_folder_pth)
+#     crops_splits = []
+    
+#     for im_pths in full_pid_splits:
+#         matching_crops = []
+        
+#         for im_pth in im_pths:
+#             # Find crops that match the current full image name
+#             name = im_pth.stem
+#             crops_for_this_image = [crop_pth for crop_pth in crop_im_pths if crop_pth.stem.startswith(name)]
+#             matching_crops.extend(crops_for_this_image)
+        
+#         crops_splits.append(matching_crops)
+    
+#     return crops_splits
+
+def make_yolo_folders(dir_name, train_images, val_images, test_images=None):
     """
     Creates YOLO format folder structure and populates it with the split datasets.
 
@@ -94,11 +127,15 @@ def make_yolo_folders(dir_name, train_images, val_images, test_images):
     base_dir = Path(train_images[0]).parent.parent / dir_name
     base_dir.mkdir(parents=True, exist_ok=True)
 
-    yolo_folders = {
+    if test_images:
+        yolo_folders = {
         'train': train_images,
         'val': val_images,
-        'test': test_images
-    }
+        'test': test_images}
+    else:
+        yolo_folders = {
+        'train': train_images,
+        'val': val_images}
 
     for folder, image_paths in yolo_folders.items():
         image_folder = base_dir / f'images/{folder}'
