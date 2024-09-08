@@ -45,7 +45,70 @@ def get_im_txt_pths(dataset_dir, im_extensions=('.jpg', '.png', '.tiff')):
     
     return im_pths, txt_pths
 
-def make_patches_w_overlap(dataset_dir, overlap=0.25, sz=1024):
+def copy_files_to_directory(file_paths, dest_dir):
+    """
+    Copy a list of files to a destination directory, creating the directory if it doesn't exist.
+
+    Parameters:
+    -----------
+    file_paths : list
+        List of file paths to be copied.
+    dest_dir : str or Path
+        Destination directory to copy the files to.
+    """
+    dest_dir = Path(dest_dir)
+    dest_dir.mkdir(parents=True, exist_ok=True)  # Create directory if it doesn't exist
+
+    print(f"Copying {len(file_paths)} files to {dest_dir}...")
+    for file_path in map(Path, file_paths):
+        dest_file = dest_dir / file_path.name
+        shutil.copy(file_path, dest_file)
+    
+    print(f"Successfully copied {len(file_paths)} files to {dest_dir}")
+
+
+def class_aware_to_class_agnostic(dataset_dir, folder_name):
+    """
+    Converts class-aware YOLO annotations to class-agnostic format (single class).
+    Copies images and updates annotation files accordingly.
+
+    Parameters:
+    -----------
+    dataset_dir : str or Path
+        Path to the dataset directory containing images and YOLO format annotations.
+
+    Returns:
+    --------
+    None
+    """
+    
+    dataset_dir = Path(dataset_dir)
+    image_paths, annotation_paths = get_im_txt_pths(dataset_dir)  # Retrieve image and annotation file paths
+
+    # Destination directory for the class-agnostic patches
+    dest_dir = Path(f"{dataset_dir.parent}/{folder_name}")
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    # Step 1: Copy images to destination directory
+    copy_files_to_directory(image_paths, dest_dir)
+
+    # Step 2: Update annotations to class-agnostic format and save in destination
+    print("Converting annotations to class-agnostic format...")
+    for annotation_file in annotation_paths:
+        with open(annotation_file, 'r') as file:
+            lines = file.readlines()
+
+        # Rewrite each annotation with a single class (class 0)
+        new_annotation_path = dest_dir / annotation_file.name
+        with open(new_annotation_path, 'w') as new_file:
+            for line in lines:
+                components = line.split()
+                bbox = components[1:]  # Extract bbox coordinates
+                new_file.write(f"0 {' '.join(bbox)}\n")  # Replace class with 0
+
+    print(f"Class-agnostic conversion complete. Annotations saved to {dest_dir}")
+
+def make_patches_w_overlap(dataset_dir, overlap=0.25, sz=1024, class_aware_folder = 'patches_class_aware', class_agn_folder = 'patches_class_agnostic', n_random_patches = 0, create_class_agn_copy = False):
     """
     Create overlapping patches of images and corresponding YOLO annotations.
 
@@ -65,10 +128,9 @@ def make_patches_w_overlap(dataset_dir, overlap=0.25, sz=1024):
     None
     """
 
-    # im_pths =  natsorted(get_files(dataset_dir, extensions='.jpg'))
-    # txt_pths =  natsorted(get_files(dataset_dir, extensions='.txt'))
     im_pths, txt_pths = get_im_txt_pths(dataset_dir)
-    dest_dir = f'{dataset_dir.parent}/patches_class_aware'
+    dest_dir = Path(f'{dataset_dir.parent}/{class_aware_folder}')
+    class_aware_dir = dest_dir
     os.makedirs(dest_dir, exist_ok=True)
     
     # Process each image and corresponding annotation file
@@ -102,7 +164,8 @@ def make_patches_w_overlap(dataset_dir, overlap=0.25, sz=1024):
                 y_max = min(H, j + sz)
                 
                 transform = A.Compose([
-                    A.Crop(x_min=x_min, y_min=y_min, x_max=x_max, y_max=y_max)
+                    A.Crop(x_min=x_min, y_min=y_min, x_max=x_max, y_max=y_max),
+                    A.Resize(sz, sz)
                 ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.5, label_fields=['class_labels']))
 
                 transformed = transform(image=image, bboxes=bboxes, class_labels=class_labels)
@@ -111,22 +174,27 @@ def make_patches_w_overlap(dataset_dir, overlap=0.25, sz=1024):
                 transformed_class_labels = transformed['class_labels']
 
                 # Save the cropped image
-                cropped_img_name = f"{i}_{j}_{im_pth.stem}.jpg"
+                cropped_img_name = f"{im_pth.stem}_{i}_{j}.jpg"
                 cv2.imwrite(f"{dest_dir}/{cropped_img_name}", transformed_image)
 
                 # Save the corresponding YOLO annotation
-                annotation_name = f"{i}_{j}_{txt_pth.stem}.txt"
+                annotation_name = f"{txt_pth.stem}_{i}_{j}.txt"
                 with open(f"{dest_dir}/{annotation_name}", 'w') as g:
                     for box, label in zip(transformed_bboxes, transformed_class_labels):
                         x_c, y_c, w, h = box
                         g.write(f"{int(label)} {x_c} {y_c} {w} {h}\n")
         
         print(f"Processed patches for image: {im_pth.name}")
+        if n_random_patches>0:
+            make_random_patches_per_sheet(dataset_dir, folder_name=class_aware_folder, sz=sz, n=n_random_patches)
     
     print('********* All patches created successfully *************')
+    if create_class_agn_copy:
+        class_aware_to_class_agnostic(class_aware_dir, folder_name = class_agn_folder)
+        
 
 
-def make_random_patches_per_sheet(dataset_dir, sz=1024, n=20):
+def make_random_patches_per_sheet(dataset_dir, folder_name='patches_class_aware', sz=1024, n=20):
     """
     Create random patches of specified size from images and corresponding YOLO annotations.
 
@@ -146,10 +214,8 @@ def make_random_patches_per_sheet(dataset_dir, sz=1024, n=20):
     None
     """
     
-    # im_pths =  natsorted(get_files(dataset_dir, extensions='.jpg'))
-    # txt_pths =  natsorted(get_files(dataset_dir, extensions='.txt'))
     im_pths, txt_pths = get_im_txt_pths(dataset_dir)
-    dest_dir = f'{dataset_dir.parent}/patches_class_aware'
+    dest_dir = Path(f'{dataset_dir.parent}/{folder_name}')
     os.makedirs(dest_dir, exist_ok=True)
     
     for im_pth, txt_pth in zip(im_pths, txt_pths):
@@ -183,7 +249,8 @@ def make_random_patches_per_sheet(dataset_dir, sz=1024, n=20):
 
             # Define the transformation for cropping
             transform = A.Compose([
-                A.Crop(x_min=x_start, y_min=y_start, x_max=x_start + sz, y_max=y_start + sz)
+                A.Crop(x_min=x_start, y_min=y_start, x_max=x_start + sz, y_max=y_start + sz),
+                A.Resize(sz, sz)
             ], bbox_params=A.BboxParams(format='yolo', min_visibility=0.5, label_fields=['class_labels']))
 
             # Apply the transformation
@@ -205,7 +272,7 @@ def make_random_patches_per_sheet(dataset_dir, sz=1024, n=20):
             patch_name = f"{im_pth.stem}_patch_{i}.jpg"
             cv2.imwrite(os.path.join(dest_dir, patch_name), transformed_image)
         
-        print(f"Processed {n} patches for image: {im_pth.name}")
+        #print(f"Processed {n} patches for image: {im_pth.name}")
 
     print('********* Random patches creation completed successfully *************')
 
@@ -227,6 +294,7 @@ def get_bboxes(im_pth, txt_pth):
         A list of bounding boxes, where each box is represented as 
         (class_id, x_min, y_min, x_max, y_max).
     """
+    
     # Load image and get its dimensions
     im = cv2.imread(str(im_pth))
     if im is None:
@@ -313,6 +381,7 @@ def plot_ims_labels_grid(dataset_dir, n=8, num_classes=40):
     --------
     None
     """
+    
     # Get image and annotation file paths
     im_pths, txt_pths = get_im_txt_pths(dataset_dir)
     
