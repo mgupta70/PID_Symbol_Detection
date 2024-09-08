@@ -2,4 +2,4 @@
  Detect symbols in Piping & Instrumentation Drawings
 
 
-<img src="./overview.svg">
+<img src="./media/overview.svg">
