@@ -11,10 +11,11 @@ compared to equivalent class-aware counterparts.
 
 ### Detailed Workflow
 
-#### Data preprocessing
+#### 1. Data preprocessing
+<img src="./media/overlapping_patches.png">
 
-#### Train Yolo
+#### 2. Train Yolo (Stage-1)
 
-#### Inferencing with SAHI
+#### 3. Inferencing with SAHI (Stage-1)
 
-#### Label Transfer
+#### 4. Label Transfer (Stage-2)
