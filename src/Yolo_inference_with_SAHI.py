@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     # run SAHI inference with Yolo model trained with Class-Agnostic labels
     yolo_weights = '../models/sample_class_agnostic/best.pt'
-    run_yolo_with_sahi(test_dir=test_dir, yolo_weights, suffix='agnostic', slice_size=1024)
+    run_yolo_with_sahi(test_dir=test_dir, yolo_weights=yolo_weights, suffix='agnostic', slice_size=1024)
 
     # run SAHI inference with Yolo model trained with Class-Aware labels
     yolo_weights = '../models/sample_class_aware/best.pt'
-    run_yolo_with_sahi(test_dir=test_dir, yolo_weights, suffix='aware', slice_size=1024)
+    run_yolo_with_sahi(test_dir=test_dir, yolo_weights=yolo_weights, suffix='aware', slice_size=1024)

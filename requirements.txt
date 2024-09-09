@@ -1,0 +1,14 @@
+albumentations==1.4.11
+fastai==2.7.15
+ipython==8.12.3
+matplotlib==3.9.2
+natsort==8.4.0
+numpy==2.1.1
+opencv_python==4.8.1.78
+opencv_python_headless==4.10.0.84
+Pillow==10.4.0
+PyYAML==6.0.1
+sahi==0.11.16
+torch==2.3.1
+torchvision==0.18.1
+ultralytics==8.2.48
