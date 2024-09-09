@@ -1,7 +1,7 @@
 # PID_Symbol_Detection
 
 ### Proposed Framework vs Conventional Framework
-<img src="./media/overview2.svg">
+<img src="./media/overview2.svg" width="900">
 
 ### Benefits of Proposed Framework
 Class-Agnostic Object Detection & One-shot Label Transfer is found to be more:
@@ -16,9 +16,9 @@ compared to equivalent class-aware counterparts.
 
 
 #### 2. Train Yolo (Stage-1)
-<img src="./media/train_yolo.svg">
+<img src="./media/train_yolo.svg" width="800">
 
 #### 3. Inferencing with SAHI (Stage-1)
-<img src="./media/sahi_sample.gif">
+<img src="./media/sahi_sample.gif" width="800">
 
 #### 4. Label Transfer (Stage-2)
