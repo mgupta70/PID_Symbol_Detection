@@ -22,3 +22,4 @@ compared to equivalent class-aware counterparts.
 <img src="./media/sahi_sample.gif" width="250">
 
 #### 4. Label Transfer (Stage-2)
+<img src="./media/label_transfer.png" width="400">
