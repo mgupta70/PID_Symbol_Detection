@@ -1,7 +1,7 @@
 # PID_Symbol_Detection
 
 ### Proposed Framework vs Conventional Framework
-<img src="./media/overview2.svg" >
+<img src="./media/workflow.svg" >
 
 ### Benefits of Proposed Framework
 Class-Agnostic Object Detection & One-shot Label Transfer is found to be more:
