@@ -9,10 +9,10 @@ Class-Agnostic Object Detection & One-shot Label Transfer is found to be more:
 2. Robust to class-imbalance
 compared to equivalent class-aware counterparts.
 
-### Detailed Workflow
+### Workflow
 
 #### 1. Data preprocessing
-<img src="./media/overlapping_patches.png">
+<img src="./media/overview3.svg">
 
 #### 2. Train Yolo (Stage-1)
 
