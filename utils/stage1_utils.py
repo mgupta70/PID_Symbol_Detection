@@ -197,7 +197,7 @@ def predict_YOLO(yaml_filename, trained_weights, iou=0.5, conf=0.25, batch=1, im
 ### SAHI ###
 ############
 
-def perform_SAHI(im_pths, weights_file, slice_size, suffix = 'agnostic', with_conf_score = True, to_run = False):
+def perform_SAHI(im_pths, weights_file, sz, suffix = 'agnostic', with_conf_score = True, to_run = False):
     if len(im_pths)>0:
         dest_dir = Path(f"{im_pths[0].parent.parent}/SAHI_results_{suffix}")
         dest_dir.mkdir(parents=True, exist_ok=True)
@@ -222,10 +222,10 @@ def perform_SAHI(im_pths, weights_file, slice_size, suffix = 'agnostic', with_co
             result = get_sliced_prediction(
                 f"{str(im_pth)}",
                 detection_model,
-                slice_height=slice_size,
-                slice_width=slice_size,
-                overlap_height_ratio=0.25,
-                overlap_width_ratio=0.25)
+                slice_height=sz,
+                slice_width=sz,
+                overlap_height_ratio=0.20,
+                overlap_width_ratio=0.20)
 
             result.export_visuals(export_dir=f"{dest_dir}/", file_name= f"{name[:-4]}_{suffix}", hide_labels = True)
 
