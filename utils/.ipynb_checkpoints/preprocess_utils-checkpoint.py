@@ -307,7 +307,7 @@ def plot_bboxes(im_pth, txt_pth, num_classes=40):
     return im
 
 
-def plot_ims_labels_grid(dataset_dir, n=8, num_classes=40):
+def plot_ims_labels_grid(dataset_dir, n=8, num_classes=100, figsize=(15,5)):
     """
     Plots a grid of images with bounding boxes overlaid.
 
@@ -339,6 +339,6 @@ def plot_ims_labels_grid(dataset_dir, n=8, num_classes=40):
     ims = [plot_bboxes(im_pth, txt_pth, num_classes) for im_pth, txt_pth in zip(rand_ims, rand_txts)]
     
     # Display images in a grid
-    plt.figure(figsize=(15, 5))
-    show_images(ims, nrows=1)
+    plt.figure(figsize=figsize)
+    show_images(ims, nrows=1, figsize=figsize)
     plt.show()
