@@ -12,7 +12,8 @@ compared to equivalent class-aware counterparts.
 ### Simplified Visual Walkthrough of Proposed Framework 
 
 #### 1. Data preprocessing
-<img src="./media/overlapping_patches.png">
+<img src="./media/overlapping_patches.png" width="500">
+
 
 #### 2. Train Yolo (Stage-1)
 <img src="./media/train_yolo.svg">
