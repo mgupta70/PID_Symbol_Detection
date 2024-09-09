@@ -19,6 +19,6 @@ compared to equivalent class-aware counterparts.
 <img src="./media/train_yolo.svg" width="400">
 
 #### 3. Inferencing with SAHI (Stage-1)
-<img src="./media/sahi_sample.gif" width="400">
+<img src="./media/sahi_sample.gif" width="250">
 
 #### 4. Label Transfer (Stage-2)
