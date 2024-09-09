@@ -12,7 +12,6 @@ compared to equivalent class-aware counterparts.
 ### Workflow
 
 #### 1. Data preprocessing
-<img src="./media/overview3.svg">
 
 #### 2. Train Yolo (Stage-1)
 
