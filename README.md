@@ -23,6 +23,7 @@ Trains a 'Generic' symbol detector
 
 #### 3. Inferencing with SAHI (Stage-1)
 For large P&IDs infer on smaller patches and combine the results (implemented via <a href="https://github.com/obss/sahi"> SAHI </a>).
+
 <img src="./media/sahi_sample.gif" width="250">
 
 #### 4. Label Transfer (Stage-2)
