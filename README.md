@@ -1,6 +1,7 @@
 # PID_Symbol_Detection
 
 ### Proposed Framework vs Conventional Framework
+
 <img src="./media/workflow.svg" >
 
 ### Benefits of Proposed Framework
@@ -12,6 +13,7 @@ compared to equivalent class-aware counterparts.
 ### Simplified Visual Walkthrough of Proposed Framework 
 
 #### 1. Data preprocessing
+
 This step breaks down large P&ID sheets into overlapping patches. 
 
 <img src="./media/overlapping_patches.png" width="800">
@@ -19,11 +21,13 @@ This step breaks down large P&ID sheets into overlapping patches.
 Plus, class-aware labels are transformed into class-agnostic to prepare for training a Yolo object detection model.
 
 #### 2. Train Yolo (Stage-1)
+
 Trains a 'Generic' symbol detector
 
 <img src="./media/train_yolo.svg" width="400">
 
 #### 3. Inferencing with SAHI (Stage-1)
+
 For large P&IDs infer on smaller patches and combine the results (implemented via <a href="https://github.com/obss/sahi"> SAHI </a>).
 
 <img src="./media/sahi_sample.gif" width="250">
