@@ -36,3 +36,18 @@ For large P&IDs infer on smaller patches and combine the results (implemented vi
 Train a model using one labeled image per symbol class (e.g. P&ID legend). The model can be a Siamese Network/ Prototypical (Zero-shot) Network or a Traditional classifier trained on augmented images.
 
 <img src="./media/label_transfer.png" width="400">
+
+If you use this package in your work, please cite it as:
+```
+@article{GUPTA2024105260,
+title = {Semi-supervised symbol detection for piping and instrumentation drawings},
+journal = {Automation in Construction},
+volume = {159},
+pages = {105260},
+year = {2024},
+issn = {0926-5805},
+doi = {https://doi.org/10.1016/j.autcon.2023.105260},
+url = {https://www.sciencedirect.com/science/article/pii/S0926580523005204},
+author = {Mohit Gupta and Chialing Wei and Thomas Czerniawski},
+}
+```
